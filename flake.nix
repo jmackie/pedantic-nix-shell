@@ -4,6 +4,8 @@
     flake-root.url = "github:srid/flake-root";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+    pre-commit-hooks-nix.url = "github:cachix/pre-commit-hooks.nix";
+    pre-commit-hooks-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -16,6 +18,7 @@
       imports = [
         inputs.flake-root.flakeModule
         inputs.treefmt-nix.flakeModule
+        inputs.pre-commit-hooks-nix.flakeModule
       ];
       perSystem = { pkgs, config, ... }:
         {
@@ -25,6 +28,9 @@
             programs = {
               nixpkgs-fmt.enable = true;
             };
+          };
+          pre-commit.settings.hooks = {
+            # TODO: add some hooks
           };
           devShells.default =
             let
@@ -43,6 +49,7 @@
             pkgs.mkShell {
               nativeBuildInputs = tools;
               shellHook = ''
+                ${config.pre-commit.installationScript}
                 ${welcomeShellHook}
               '';
             };
