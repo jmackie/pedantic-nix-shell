@@ -30,7 +30,8 @@
             };
           };
           pre-commit.settings.hooks = {
-            # TODO: add some hooks
+            treefmt.enable = true;
+            treefmt.package = config.treefmt.build.wrapper;
           };
           devShells.default =
             let
